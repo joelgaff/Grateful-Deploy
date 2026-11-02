@@ -1,47 +1,83 @@
 /* Grateful Deploy — plain CSS, no build step. Tokens first, then components. */
+@font-face {
+  font-family: "Fraunces";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fraunces-600-latin.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Fraunces";
+  font-style: italic;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fraunces-600-italic-latin.woff2") format("woff2");
+}
+
+/* The day show (light) and the night show (dark). Status colours keep their meaning, only warmed. */
 :root {
-  --bg: #f6f7f9;
-  --surface: #ffffff;
-  --border: #e3e6eb;
-  --text: #1c2330;
-  --muted: #6b7486;
-  --accent: #2456d6;
-  --up: #1a7f4b;
-  --up-bg: #e3f5eb;
-  --down: #b42318;
-  --down-bg: #fdecea;
-  --warn: #9a6700;
-  --warn-bg: #fff4d6;
-  --neutral-bg: #eef0f4;
-  --log-bg: #11151c;
-  --log-text: #d6dbe4;
-  /* The dancing bear (bear/palettes.js): outline, body, collar. */
-  --bear-outline: #14141e;
-  --bear-body: #7d808a;
-  --bear-collar: #d2d5db;
+  --bg: #f6f0e4;
+  --surface: #fffcf6;
+  --border: #e7dccb;
+  --text: #2a221e;
+  --muted: #6c5f55;
+  --on-page: #463b33;
+  --accent: #a8283c;
+  --on-accent: #ffffff;
+  --rose-fold: #76192a;
+  --leaf: #4f7d4f;
+  --blue: #2f5f8f;
+  --up: #2d6e45;
+  --up-bg: #e3eedf;
+  --down: #a3261d;
+  --down-bg: #f6e0da;
+  --warn: #8a5a00;
+  --warn-bg: #f5e8c8;
+  --neutral-bg: #efe6d6;
+  --log-bg: #1d1a28;
+  --log-text: #e9e1d4;
+  --card-shadow: 0 1px 0 rgba(80, 50, 20, 0.04);
+  --dye: #984f74, #559297, #d9c387, #5f4779, #b98366, #426085;
+  --dye-opacity: 0.75;
+  --tie-dye: url("tiedye-light.webp");
+  /* The dancing bear (bear/palettes.js): outline and collar here; each app's body colour
+     comes from its name (bear_palette). */
+  --bear-outline: #1e1a18;
+  --bear-body: #3f6fb5;
+  --bear-collar: #f6ecd6;
   --radius: 10px;
   --font: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display: "Fraunces", Georgia, serif;
   --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0f1218;
-    --surface: #171b23;
-    --border: #262c37;
-    --text: #e6e9ef;
-    --muted: #8b94a7;
-    --accent: #7aa2ff;
-    --up: #5fd39a;
-    --up-bg: #16322a;
-    --down: #ff8a80;
-    --down-bg: #3a1c1c;
-    --warn: #f2c14e;
-    --warn-bg: #3a3016;
-    --neutral-bg: #222833;
-    --bear-outline: #05070a;
-    --bear-body: #a3a9b6;
-    --bear-collar: #e6e9ef;
+    --bg: #14121c;
+    --surface: #1d1a28;
+    --border: #302b40;
+    --text: #efe6d8;
+    --muted: #a99f94;
+    --on-page: #d6cdc1;
+    --accent: #f07a8a;
+    --on-accent: #14121c;
+    --rose-fold: #b8475a;
+    --leaf: #86b07f;
+    --blue: #86aedb;
+    --up: #7fd39a;
+    --up-bg: #1c3326;
+    --down: #ff958a;
+    --down-bg: #3b1d22;
+    --warn: #f0bd55;
+    --warn-bg: #3a2f17;
+    --neutral-bg: #28243a;
+    --log-bg: #0f0d16;
+    --card-shadow: none;
+    --dye: #c08aa3, #86b5b8, #e0d0a0, #9a8bb2, #d0a68e, #8c9fbc;
+    --dye-opacity: 0.6;
+    --tie-dye: url("tiedye-dark.webp");
+    --bear-outline: #05040a;
+    --bear-collar: #efe6d8;
   }
 }
 
@@ -61,24 +97,44 @@ a:hover { text-decoration: underline; }
 .muted { color: var(--muted); font-weight: normal; }
 
 /* Layout */
+.masthead { background: var(--surface); }
 .topbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
   padding: 0.75rem 1.5rem;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
 }
-.topbar__brand { font-weight: 700; color: var(--text); letter-spacing: -0.01em; }
+.topbar__brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); font: 600 21px/1.2 var(--display); letter-spacing: -0.01em; }
+.topbar__brand:hover { text-decoration: none; }
 .topbar__nav { display: flex; align-items: center; gap: 1.25rem; }
+.topbar__nav > a[aria-current] { font-weight: 600; }
+/* The only tie-dye stripe: 2px under the top bar. */
+.dye { height: 2px; background: linear-gradient(90deg, var(--dye)); opacity: var(--dye-opacity); }
+
+/* The rose mark (layouts/_rose): petals in the accent, folds a darker rose, a green stem. */
+.rose { display: block; flex: none; }
+.rose__petals { fill: var(--accent); }
+.rose__folds { fill: none; stroke: var(--rose-fold); stroke-width: 0.9; stroke-linecap: round; }
+.rose__stem { fill: none; stroke: var(--leaf); stroke-width: 1.6; stroke-linecap: round; }
+.rose__leaf { fill: var(--leaf); }
+
+/* The overview pages (Apps, Servers) sit on a faint tie-dye; the text that sits straight on it
+   gets a surface behind it so it stays readable. */
+body.tie-dye { background: var(--bg) var(--tie-dye) center top / cover fixed no-repeat; }
+.tie-dye .toolbar > p { padding: 0.3rem 0.75rem; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); color: var(--on-page); }
+.tie-dye .server-group > .section-header { width: fit-content; max-width: 100%; padding: 0.35rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.tie-dye .button--quiet { background: var(--surface); color: var(--on-page); }
+
+h1, h2 { font-family: var(--display); font-weight: 600; }
 .topbar__nav form { margin: 0; }
 
 .page { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
 
 .section-header { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
-.section-header h1 { font-size: 1.25rem; margin: 0; }
-.section-header h1 .muted { font-size: 0.9rem; margin-left: 0.5rem; }
+.section-header h1 { font-size: 1.4rem; margin: 0; letter-spacing: -0.01em; }
+.section-header h1 .muted, .section-header h2 .muted { font-family: var(--font); font-size: 0.9rem; margin-left: 0.5rem; }
 
 .server-group + .server-group { margin-top: 2.5rem; }
 
@@ -94,7 +150,7 @@ a:hover { text-decoration: underline; }
   border: 1px solid var(--accent);
   border-radius: 8px;
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   font: inherit;
   font-weight: 600;
   cursor: pointer;
@@ -119,11 +175,13 @@ a:hover { text-decoration: underline; }
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
 }
 .app-card__header { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
-.app-card__name { font-size: 1.05rem; margin: 0; }
+.app-card__name { font: 600 1.05rem/1.4 var(--font); margin: 0; min-width: 0; overflow-wrap: anywhere; }
 .app-card__name a { color: var(--text); }
-.app-card__domain { font-size: 0.85rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.domain-link { color: var(--blue); }
+.app-card__domain { color: var(--blue); font-size: 0.85rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .app-card__facts { display: grid; grid-template-columns: auto 1fr; gap: 0.25rem 1rem; margin: 0.25rem 0 0; font-size: 0.9rem; }
 .app-card__facts div { display: contents; }
 .app-card__facts dt { color: var(--muted); }
@@ -177,7 +235,7 @@ a:hover { text-decoration: underline; }
 /* Panels on the app page */
 .panel { padding: 1.1rem 1.25rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
 .panel + .panel { margin-top: 1.25rem; }
-.panel h2 { font-size: 1rem; margin: 0 0 0.75rem; }
+.panel h2 { font-size: 1.15rem; margin: 0 0 0.75rem; }
 .app-facts { display: grid; grid-template-columns: max-content 1fr; gap: 0.4rem 1.5rem; margin: 0; }
 .app-facts div { display: contents; }
 .app-facts dt { color: var(--muted); }
@@ -229,3 +287,14 @@ details.panel[open] summary { margin-bottom: 0.75rem; }
 .bear--corner { position: absolute; right: 16px; bottom: 12px; }
 /* Room below the card's text for the bear, so it never covers a fact. */
 .app-card:has(> .bear--corner) { padding-bottom: 48px; }
+
+/* Sign in */
+.signin { max-width: 400px; justify-self: center; margin: 3rem auto; display: grid; gap: 1.5rem; justify-items: center; text-align: center; }
+.signin__title { margin: 0; font: 600 2.25rem/1.15 var(--display); letter-spacing: -0.015em; }
+.signin__tagline { margin: 0.25rem 0 0; font-family: var(--display); font-style: italic; color: var(--muted); }
+.signin__form { width: 100%; display: grid; gap: 0.75rem; padding: 1.5rem; text-align: left; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
+.signin__form h1 { margin: 0; font: 600 1.1rem/1.3 var(--font); }
+.signin__form p { margin: 0; color: var(--muted); }
+.signin__form label { font-size: 0.9rem; color: var(--muted); }
+.signin__form input[type=email], .signin__form input[type=text] { padding: 0.6rem 0.75rem; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); font: inherit; }
+.signin__form .button { justify-content: center; padding: 0.65rem 1rem; }

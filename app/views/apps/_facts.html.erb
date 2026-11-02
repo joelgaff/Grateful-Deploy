@@ -8,7 +8,7 @@
     <div><dt>Domains</dt>
       <dd>
         <% app.domains.each do |domain| %>
-          <%= link_to domain, "http://#{domain}", target: "_blank", rel: "noopener" %><br>
+          <%= link_to domain, "http://#{domain}", class: "domain-link", target: "_blank", rel: "noopener" %><br>
         <% end %>
       </dd>
     </div>

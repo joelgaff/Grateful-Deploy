@@ -31,5 +31,5 @@
   <% if snapshot %>
     <p class="app-card__checked muted">Checked <%= exact_time(snapshot.checked_at) %></p>
   <% end %>
-  <%= render "shared/bear", size: 32, corner: true if deploy&.status.in?(Deploy::IN_FLIGHT) %>
+  <%= render "shared/bear", size: 32, corner: true, app: app if deploy&.status.in?(Deploy::IN_FLIGHT) %>
 </article>

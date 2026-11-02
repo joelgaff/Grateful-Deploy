@@ -1,5 +1,15 @@
-<h1>Sign in</h1>
-<%= form_with url: session_path, method: :post do |f| %>
-  <%= f.email_field :email, placeholder: "you@example.com", required: true, autofocus: true %>
-  <%= f.submit "Email me a code" %>
-<% end %>
+<div class="signin">
+  <div>
+    <%= render "layouts/rose", size: 48 %>
+  </div>
+  <div>
+    <p class="signin__title">Grateful Deploy</p>
+    <p class="signin__tagline">Deploys without the long, strange trip.</p>
+  </div>
+  <%= form_with url: session_path, method: :post, class: "signin__form" do |f| %>
+    <h1>Sign in</h1>
+    <%= f.label :email, "Email" %>
+    <%= f.email_field :email, placeholder: "you@example.com", required: true, autofocus: true %>
+    <%= f.submit "Email me a code", class: "button" %>
+  <% end %>
+</div>

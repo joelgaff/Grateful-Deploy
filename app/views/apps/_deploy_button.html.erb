@@ -1,5 +1,5 @@
 <% if app.deploy_in_flight? %>
-  <button class="button bear-row" disabled><%= render "shared/bear", size: 32 %>Deploy in progress</button>
+  <button class="button bear-row" disabled><%= render "shared/bear", size: 32, app: app %>Deploy in progress</button>
 <% elsif (reason = app.deploy_blocked_reason) %>
   <div>
     <button class="button" disabled>Deploy</button>

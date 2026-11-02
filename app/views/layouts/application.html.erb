@@ -23,16 +23,22 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <header class="topbar">
-      <%= link_to "Grateful Deploy", root_path, class: "topbar__brand" %>
-      <% if logged_in? %>
-        <nav class="topbar__nav">
-          <%= link_to "Apps", root_path %>
-          <%= link_to "Servers", servers_path %>
-          <%= button_to "Sign out", session_path, method: :delete, class: "button button--quiet" %>
-        </nav>
-      <% end %>
+  <body class="<%= content_for(:body_class) %>">
+    <header class="masthead">
+      <div class="topbar">
+        <%= link_to root_path, class: "topbar__brand" do %>
+          <%= render "layouts/rose", size: 24 %>
+          Grateful Deploy
+        <% end %>
+        <% if logged_in? %>
+          <nav class="topbar__nav">
+            <%= link_to "Apps", root_path, aria: { current: ("page" if current_page?(root_path)) } %>
+            <%= link_to "Servers", servers_path, aria: { current: ("page" if current_page?(servers_path)) } %>
+            <%= button_to "Sign out", session_path, method: :delete, class: "button button--quiet" %>
+          </nav>
+        <% end %>
+      </div>
+      <div class="dye" aria-hidden="true"></div>
     </header>
 
     <main class="page">
