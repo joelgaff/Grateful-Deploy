@@ -39,3 +39,6 @@
 
 # Your own encrypted credentials (bin/rails credentials:edit makes them, with config/master.key).
 /config/credentials.yml.enc
+
+# Working notes for Claude Code, kept on this machine only.
+/CLAUDE.md

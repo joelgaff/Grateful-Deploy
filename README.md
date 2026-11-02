@@ -9,6 +9,15 @@ It runs on your own machine, bound to 127.0.0.1, with your SSH keys and your
 app repos. It's built for Linux with a systemd user service; the app launcher
 entry is for [Omarchy](https://omarchy.org) and is skipped elsewhere.
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/dashboard-dark.jpg">
+    <img src="docs/images/dashboard-light.jpg" width="800" alt="The Grateful Deploy dashboard: a card per app, grouped by server, with health, running version, memory and last deploy">
+  </picture>
+</p>
+
+More at [gratefuldeploy.com](https://gratefuldeploy.com).
+
 ## Setup
 
 ```sh
