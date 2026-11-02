@@ -7,7 +7,7 @@ module AppsHelper
       elsif snapshot.running_unchecked? then [ "Running · not health-checked", "unknown" ]
       else [ "Down", "down" ]
       end
-    tag.span(label, class: "health health--#{modifier}")
+    tag.span(label, class: "health health--#{modifier}", title: ("He's Gone" if modifier == "down"))
   end
 
   # "HEAD abc1234 · 2 commits ahead of running · uncommitted changes"

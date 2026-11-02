@@ -25,6 +25,9 @@
     </div>
   </dl>
 
+  <% if deploy&.status.in?(Deploy::IN_FLIGHT) %>
+    <%= truckin(deploy) %>
+  <% end %>
   <% if snapshot&.error %>
     <p class="<%= snapshot.running_unchecked? ? "app-card__note" : "app-card__error" %>" title="<%= snapshot.error %>"><%= snapshot.error.truncate(80) %></p>
   <% end %>

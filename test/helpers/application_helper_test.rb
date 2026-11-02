@@ -13,4 +13,15 @@ class ApplicationHelperTest < ActionView::TestCase
 
     assert_operator names.map { bear_palette(App.new(name: it))[:b] }.uniq.size, :>, 2
   end
+
+  test "Truckin' says what's running and which version" do
+    app = apps(:storefront)
+    sha = "3f1c9e2a" + "0" * 32
+
+    assert_dom_equal %(<p class="truckin">Truckin'… deploying <span class="mono">3f1c9e2</span></p>),
+      truckin(app.deploys.new(kind: "deploy", git_sha: sha))
+    assert_dom_equal %(<p class="truckin">Truckin'… rolling back to <span class="mono">3f1c9e2</span></p>),
+      truckin(app.deploys.new(kind: "rollback", version: sha))
+    assert_dom_equal %(<p class="truckin">Truckin'… deploying</p>), truckin(app.deploys.new(kind: "deploy"))
+  end
 end

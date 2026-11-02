@@ -11,7 +11,10 @@
   </header>
 
   <section class="panel">
-    <%= render "shared/bear", size: 32, corner: true, app: deploy.app if deploy.status.in?(Deploy::IN_FLIGHT) %>
+    <% if deploy.status.in?(Deploy::IN_FLIGHT) %>
+      <%= render "shared/bear", size: 32, corner: true, app: deploy.app %>
+      <%= truckin(deploy) %>
+    <% end %>
     <dl class="app-facts deploy-facts">
       <% if deploy.rollback_kind? %>
         <div><dt>Rolling back to</dt><dd class="mono"><%= deploy.version.first(7) %></dd></div>

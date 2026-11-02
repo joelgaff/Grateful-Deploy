@@ -1,5 +1,6 @@
 <section id="<%= dom_id(app, :rollbacks) %>" class="panel rollbacks">
   <h2>Roll back</h2>
+  <p class="nod">Help on the Way</p>
   <% versions = app.rollback_versions %>
   <% if versions.any? %>
     <p class="muted">Versions <%= app.name %> has run before. Kamal can only roll back to versions whose container is still on the server.</p>

@@ -11,4 +11,15 @@ module ApplicationHelper
   def bear_palette(app)
     { b: BEAR_COLOURS[Zlib.crc32(app.name) % BEAR_COLOURS.size] }
   end
+
+  # Beside the bear while a deploy runs: "Truckin'… deploying 3f1c9e2".
+  def truckin(deploy)
+    action, version =
+      if deploy.rollback_kind? then [ "rolling back to", deploy.version ]
+      elsif deploy.start_kind? then [ "starting", deploy.version ]
+      elsif deploy.deploy_kind? then [ "deploying", deploy.git_sha ]
+      end
+    words = [ "Truckin'…", action, (tag.span(version.first(7), class: "mono") if version) ].compact
+    tag.p(safe_join(words, " "), class: "truckin")
+  end
 end

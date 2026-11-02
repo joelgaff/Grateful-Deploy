@@ -288,6 +288,14 @@ details.panel[open] summary { margin-bottom: 0.75rem; }
 /* Room below the card's text for the bear, so it never covers a fact. */
 .app-card:has(> .bear--corner) { padding-bottom: 48px; }
 
+/* Song-title nods: secondary text only; buttons and statuses keep their plain names. */
+.nod, .truckin { font-family: var(--display); font-style: italic; color: var(--accent); }
+.nod { margin: -0.6rem 0 0.75rem; font-size: 0.9rem; }
+.truckin { margin: 0; font-size: 0.85rem; }
+.truckin .mono { font-style: normal; }
+.app-card .truckin { padding-right: 44px; }
+.panel > .truckin { margin: 0 0 0.75rem; }
+
 /* Sign in */
 .signin { max-width: 400px; justify-self: center; margin: 3rem auto; display: grid; gap: 1.5rem; justify-items: center; text-align: center; }
 .signin__title { margin: 0; font: 600 2.25rem/1.15 var(--display); letter-spacing: -0.015em; }

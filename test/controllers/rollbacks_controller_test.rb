@@ -38,6 +38,7 @@ class RollbacksControllerTest < ActionDispatch::IntegrationTest
   test "the app page offers a confirmed rollback button per version" do
     get app_path(apps(:storefront))
 
+    assert_select ".rollbacks .nod", "Help on the Way"
     assert_select ".rollbacks form[action=?]", app_rollbacks_path(apps(:storefront)), 2
     assert_select ".rollbacks form input[name=version][value=?]", OFFERED
     assert_select ".rollbacks button[data-turbo-confirm]", "Roll back to 7d1e0f2"

@@ -5,7 +5,7 @@ class AppsHelperTest < ActionView::TestCase
 
   test "health badge: healthy, down, or not checked yet" do
     assert_dom_equal %(<span class="health health--up">Healthy</span>), health_badge(snapshot(health_code: 200))
-    assert_dom_equal %(<span class="health health--down">Down</span>), health_badge(snapshot(health_code: 502))
+    assert_dom_equal %(<span class="health health--down" title="He's Gone">Down</span>), health_badge(snapshot(health_code: 502))
     assert_dom_equal %(<span class="health health--unknown">Not checked yet</span>), health_badge(nil)
   end
 
@@ -14,6 +14,6 @@ class AppsHelperTest < ActionView::TestCase
     assert_dom_equal %(<span class="health health--unknown">Running · not health-checked</span>), health_badge(running)
 
     stopped = snapshot(container_state: "missing", health_code: nil, error: HealthCheck::NO_DOMAIN)
-    assert_dom_equal %(<span class="health health--down">Down</span>), health_badge(stopped)
+    assert_dom_equal %(<span class="health health--down" title="He's Gone">Down</span>), health_badge(stopped)
   end
 end
