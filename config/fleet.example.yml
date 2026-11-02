@@ -1,0 +1,38 @@
+# Servers and the apps Kamal deploys to them. Loaded by db/seeds.rb (Fleet.import).
+# Copy this to config/fleet.yml (bin/setup does) and list your own; fleet.yml
+# stays out of git, since it maps out your servers.
+#
+# An app with `config_file` runs `kamal -c <file>`; otherwise `kamal -d <destination>`.
+# kamal_binary: bundled (the repo's bin/kamal, default) or global (`kamal` on PATH).
+servers:
+  web1:
+    # An IP or an SSH host name (one from ~/.ssh/config or your tailnet works too).
+    host: 203.0.113.10
+    ssh_user: root
+    region: Example region
+    # The ports kamal-proxy publishes; health checks use them.
+    proxy_http_port: 80
+    proxy_https_port: 443
+    apps:
+      blog:
+        repo_path: ~/Work/blog
+        destination: production
+        service: blog
+        # Apps whose proxy redirects HTTP to HTTPS are checked over HTTPS, on
+        # their first domain.
+        health_https: true
+        domains: [blog.example.com, www.blog.example.com]
+      shop:
+        # A standalone config file instead of a destination.
+        repo_path: ~/Work/shop
+        config_file: config/deploy.production.yml
+        kamal_binary: global
+        service: shop
+        health_path: /up
+        health_https: true
+        # Plain values the repo's deploy.yml reads from ENV. Never secrets:
+        # those stay in the repo's own .env.
+        kamal_env:
+          SHOP_SERVER: 203.0.113.10
+          SHOP_DOMAIN: shop.example.com
+        domains: [shop.example.com]

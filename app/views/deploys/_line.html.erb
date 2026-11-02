@@ -1,0 +1,1 @@
+<% if (number = local_assigns[:number]) %><div class="log-line" id="<%= deploy.line_dom_id(number) %>" data-line="<%= number %>"><%= line %></div><% else %><div class="log-line"><%= line %></div><% end %>

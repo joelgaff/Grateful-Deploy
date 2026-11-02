@@ -1,0 +1,4 @@
+<header id="<%= dom_id(app, :header) %>" class="section-header">
+  <h1><%= app.name %> <span class="muted"><%= app.server.name %></span></h1>
+  <%= health_badge(app.latest_status_snapshot) %>
+</header>

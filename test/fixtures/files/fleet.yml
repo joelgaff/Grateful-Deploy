@@ -1,0 +1,20 @@
+servers:
+  lab:
+    host: 198.51.100.7
+    region: Lab
+    proxy_http_port: 8080
+    apps:
+      blog:
+        repo_path: ~/Work/blog
+        destination: lab
+        service: blog
+        domains: [blog.example.com]
+      shop:
+        repo_path: /srv/shop
+        config_file: config/deploy.lab.yml
+        kamal_binary: global
+        service: shop
+        health_path: /health
+        kamal_env:
+          SHOP_SERVER: 198.51.100.7
+          SHOP_DOMAIN:

@@ -1,0 +1,12 @@
+<% content_for :title, "Servers · Grateful Deploy" %>
+<%= turbo_stream_from "servers" %>
+
+<div class="toolbar">
+  <p class="muted">Read-only checks over SSH every 2 minutes: free, df, load average, docker ps, docker stats.</p>
+  <div class="toolbar__actions">
+    <%= link_to "Add server", new_server_path, class: "button button--quiet" %>
+    <%= button_to "Refresh now", status_refresh_path, class: "button button--quiet" %>
+  </div>
+</div>
+
+<%= render partial: "servers/panel", collection: @servers, as: :server %>

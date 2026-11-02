@@ -1,0 +1,9 @@
+<%# Stop frees a running app's memory; Start boots the stopped container again. Off while a deploy runs or Deploy is blocked. %>
+<% blocked = app.deploy_in_flight? || app.deploy_blocked_reason %>
+<% if app.running? %>
+  <%= button_to "Stop container", app_stops_path(app), class: "button button--danger", disabled: blocked,
+        data: { turbo_confirm: "Stop #{app.name} on #{app.server.name}?\n\nIts sites show an error until it's started or deployed again. Its data stays on the server." } %>
+<% elsif (version = app.stopped_version) %>
+  <%= button_to "Start container", app_starts_path(app), class: "button", disabled: blocked,
+        data: { turbo_confirm: "Start #{app.name} #{version.first(7)} on #{app.server.name} again?" } %>
+<% end %>

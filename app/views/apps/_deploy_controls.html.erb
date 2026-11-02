@@ -1,0 +1,23 @@
+<% preview = ShipPreview.new(app, fresh_ci: local_assigns.fetch(:fresh_ci, false)) %>
+<div id="<%= dom_id(app, :deploy_controls) %>" class="toolbar"
+     data-controller="refresh-on-focus" data-refresh-on-focus-url-value="<%= app_ship_preview_path(app) %>">
+  <div>
+    <p class="muted">Kamal builds the last commit in <span class="mono"><%= app.repo_path %></span>, not uncommitted changes.</p>
+    <%= ship_preview_line(preview) %>
+    <% if preview.ci_checkable? %>
+      <%= button_to "Check CI", app_ci_check_path(app), class: "button button--quiet button--small" %>
+    <% end %>
+  </div>
+  <div class="toolbar__actions">
+    <%= render "apps/container_button", app: app %>
+    <%= render "apps/deploy_button", app: app, preview: preview %>
+  </div>
+  <% if (lock = app.kamal_lock) && !app.deploy_in_flight? %>
+    <div class="kamal-lock">
+      <p><strong>Kamal's deploy lock is held.</strong> A deploy from a terminal or CI may be running, or one stopped without releasing it.</p>
+      <pre class="mono"><%= lock %></pre>
+      <%= button_to "Release Kamal lock", app_lock_releases_path(app), class: "button button--danger button--small",
+            data: { turbo_confirm: "Release Kamal's deploy lock for #{app.name}?\n\nOnly if no deploy of #{app.name} is running anywhere (terminal, CI): releasing a lock that's in use lets two deploys run at once." } %>
+    </div>
+  <% end %>
+</div>

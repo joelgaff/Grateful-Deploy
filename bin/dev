@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+# Local only: bound to 127.0.0.1, with Solid Queue running inside Puma.
+# Port 3101 by default: production (the grateful-deploy user service) has 3100,
+# and other local Rails apps usually have 3000.
+ENV["SOLID_QUEUE_IN_PUMA"] ||= "1"
+ENV["PORT"] ||= "3101"
+exec "./bin/rails", "server", "-b", "127.0.0.1", *ARGV

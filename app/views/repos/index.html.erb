@@ -1,0 +1,38 @@
+<% content_for :title, "Add app · Grateful Deploy" %>
+
+<header class="section-header">
+  <h1>Add app <span class="muted">Kamal configs in <%= @root %></span></h1>
+</header>
+
+<section class="panel">
+  <h2>Ready to add</h2>
+  <% if @ready.any? %>
+    <ul class="repo-configs">
+      <% @ready.each do |proposal| %>
+        <li class="repo-config">
+          <%= link_to new_app_path(repo: proposal.config.repo.key, config: proposal.config.id) do %>
+            <strong><%= proposal.config.repo.key %></strong> <span class="mono"><%= proposal.config.id %></span>
+          <% end %>
+          <span class="muted">
+            <%= proposal.config.service %> on <%= proposal.server&.name || "a server you pick" %>
+            <%= "· #{proposal.config.domains.first}" if proposal.config.domains.any? %>
+          </span>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="muted">Nothing new to add.</p>
+  <% end %>
+</section>
+
+<details class="panel">
+  <summary>Can't be added (<%= @blocked.size %>)</summary>
+  <ul class="repo-configs">
+    <% @blocked.each do |proposal| %>
+      <li class="repo-config repo-config--blocked">
+        <strong><%= proposal.config.repo.key %></strong> <span class="mono"><%= proposal.config.id %></span>
+        <span class="muted"><%= proposal.blocked_reason %></span>
+      </li>
+    <% end %>
+  </ul>
+</details>

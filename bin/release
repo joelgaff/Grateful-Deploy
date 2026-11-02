@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+# Puts the last pushed commit (origin/master, which local CI passed before the
+# push) live in the production service at http://127.0.0.1:3100.
+#
+# Production runs from its own checkout, so edits here never go live by
+# accident. This script: refuses while a deploy or log session is running,
+# moves that checkout to the pushed commit, links the files git doesn't hold
+# (master.key, credentials, fleet.yml) from the source checkout, installs gems (local only, no
+# downloads), precompiles assets, migrates and seeds the database (fleet.yml),
+# links and enables the user service and installs the Grateful Deploy app
+# launcher the first time, restarts it, and waits for /up.
+set -euo pipefail
+
+SOURCE="$(cd "$(dirname "$0")/.." && pwd)"
+PROD="${GRATEFUL_DEPLOY_PROD_DIR:-$HOME/.local/share/grateful-deploy}"
+UNIT="grateful-deploy.service"
+UP_URL="http://127.0.0.1:3100/up"
+
+in_prod() { (cd "$PROD" && RAILS_ENV=production mise exec -- "$@"); }
+
+commit="$(git -C "$SOURCE" rev-parse --verify origin/master)"
+echo "Releasing $(git -C "$SOURCE" log -1 --format='%h %s' "$commit")"
+
+# A restart would cut off a running deploy (Kamal stopped part way).
+if systemctl --user is-active --quiet "$UNIT"; then
+  in_prod bin/rails grateful_deploy:assert_idle
+fi
+
+[ -d "$PROD/.git" ] || git clone --quiet --no-checkout "$SOURCE" "$PROD"
+git -C "$PROD" fetch --quiet "$SOURCE" refs/remotes/origin/master
+[ "$(git -C "$PROD" rev-parse FETCH_HEAD)" = "$commit" ] || { echo "Fetched commit doesn't match origin/master" >&2; exit 1; }
+git -C "$PROD" checkout --quiet --detach "$commit"
+# Not in git, so linked from the source checkout. Add app writes new apps
+# through the fleet.yml link, into the source checkout's file.
+for file in master.key credentials.yml.enc fleet.yml; do
+  ln -sfn "$SOURCE/config/$file" "$PROD/config/$file"
+done
+
+in_prod bundle install --local --quiet
+in_prod bin/rails assets:precompile
+in_prod bin/rails db:prepare
+in_prod bin/rails db:seed
+
+# The secret Kamal's post-deploy hooks send when reporting deploys made
+# outside Grateful Deploy (HookToken). Only this user can read it; repos never hold it.
+TOKEN_FILE="$HOME/.config/grateful-deploy/hook_token"
+if [ ! -s "$TOKEN_FILE" ]; then
+  mkdir -p "$(dirname "$TOKEN_FILE")"
+  (umask 077 && openssl rand -hex 32 > "$TOKEN_FILE")
+fi
+
+if ! systemctl --user cat "$UNIT" > /dev/null 2>&1; then
+  systemctl --user link "$PROD/config/systemd/$UNIT"
+  systemctl --user enable "$UNIT"
+fi
+systemctl --user daemon-reload
+systemctl --user restart "$UNIT"
+
+# The "Grateful Deploy" app in the launcher (Super+Space): bin/open starts the
+# service if needed, then opens its own window. Omarchy's web app installer.
+if command -v omarchy-webapp-install > /dev/null && [ ! -f "$HOME/.local/share/applications/Grateful Deploy.desktop" ]; then
+  omarchy-webapp-install "Grateful Deploy" "http://127.0.0.1:3100" "$PROD/public/icon.png" "$PROD/bin/open"
+fi
+
+for _ in $(seq 60); do
+  if curl -fs -o /dev/null "$UP_URL"; then
+    echo "Grateful Deploy $(git -C "$PROD" rev-parse --short HEAD) is up at http://127.0.0.1:3100"
+    exit 0
+  fi
+  sleep 1
+done
+echo "Grateful Deploy didn't answer $UP_URL within 60s. Recent log:" >&2
+journalctl --user -u "$UNIT" -n 40 --no-pager >&2
+exit 1

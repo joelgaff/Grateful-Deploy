@@ -1,0 +1,23 @@
+default: &default
+  dispatchers:
+    - polling_interval: 1
+      batch_size: 500
+  # 6 jobs at once. Deploys get 3 slots of their own so live log follows
+  # (up to 15 minutes each) can't keep a deploy waiting; the other 3 run
+  # logs, the status refresh, and any spare deploys.
+  workers:
+    - queues: deploys
+      threads: 3
+      polling_interval: 1
+    - queues: "*"
+      threads: 3
+      polling_interval: 1
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default

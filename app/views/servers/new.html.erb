@@ -1,0 +1,35 @@
+<% content_for :title, "Add server · Grateful Deploy" %>
+
+<header class="section-header">
+  <h1>Add server</h1>
+</header>
+
+<section class="panel">
+  <%= form_with model: @server, url: servers_path, class: "app-form" do |form| %>
+    <% if @server.errors.any? %>
+      <ul class="form-errors flash flash--alert">
+        <% @server.errors.full_messages.each do |message| %><li><%= message %></li><% end %>
+      </ul>
+    <% end %>
+
+    <label>Name <span class="muted">(as in config/fleet.yml)</span> <%= form.text_field :name, required: true %></label>
+    <label>Host <span class="muted">(hostname or IP address)</span> <%= form.text_field :host, required: true, class: "mono" %></label>
+    <label>SSH user <%= form.text_field :ssh_user, required: true, class: "mono" %></label>
+    <label>Region <%= form.text_field :region %></label>
+
+    <fieldset>
+      <legend>kamal-proxy ports <span class="muted">(where health checks reach the apps)</span></legend>
+      <label>HTTP <%= form.number_field :proxy_http_port, in: 1..65535, required: true %></label>
+      <label>HTTPS <%= form.number_field :proxy_https_port, in: 1..65535, required: true %></label>
+    </fieldset>
+
+    <label>Notes <%= form.text_field :notes %></label>
+
+    <p class="muted">Grateful Deploy checks it over SSH right away, with your SSH agent's keys.</p>
+
+    <div class="button-row">
+      <%= form.submit "Add server", class: "button" %>
+      <%= link_to "Back", servers_path, class: "button button--quiet" %>
+    </div>
+  <% end %>
+</section>

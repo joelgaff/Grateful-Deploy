@@ -1,0 +1,7 @@
+<h1>Enter your code</h1>
+<p>We emailed a 6-digit code to <%= @identity.email %>.</p>
+<%= form_with url: confirm_session_path, method: :post do |f| %>
+  <%= f.hidden_field :identity_id, value: @identity.id %>
+  <%= f.text_field :code, inputmode: "numeric", pattern: "[0-9]*", maxlength: 6, required: true, autofocus: true %>
+  <%= f.submit "Sign in" %>
+<% end %>

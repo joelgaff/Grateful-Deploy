@@ -1,0 +1,35 @@
+<% snapshot = app.latest_status_snapshot %>
+<% deploy = app.latest_deploy %>
+<article id="<%= dom_id(app, :card) %>" class="app-card">
+  <header class="app-card__header">
+    <h2 class="app-card__name"><%= link_to app.name, app %></h2>
+    <%= health_badge(snapshot) %>
+  </header>
+
+  <% if app.primary_domain %>
+    <%= link_to app.primary_domain, "http://#{app.primary_domain}", class: "app-card__domain", target: "_blank", rel: "noopener" %>
+  <% end %>
+
+  <dl class="app-card__facts">
+    <div><dt>Version</dt><dd class="app-card__version mono"><%= app.running_status_snapshot&.short_version || "—" %></dd></div>
+    <div><dt>Memory</dt><dd class="app-card__memory"><%= snapshot&.memory_bytes ? number_to_human_size(snapshot.memory_bytes) : "—" %></dd></div>
+    <div><dt>Last deploy</dt>
+      <dd class="app-card__deploy">
+        <% if deploy %>
+          <%= render "deploys/status", deploy: deploy %>
+          <%= exact_time(deploy.created_at) %>
+        <% else %>
+          Never from here
+        <% end %>
+      </dd>
+    </div>
+  </dl>
+
+  <% if snapshot&.error %>
+    <p class="<%= snapshot.running_unchecked? ? "app-card__note" : "app-card__error" %>" title="<%= snapshot.error %>"><%= snapshot.error.truncate(80) %></p>
+  <% end %>
+  <% if snapshot %>
+    <p class="app-card__checked muted">Checked <%= exact_time(snapshot.checked_at) %></p>
+  <% end %>
+  <%= render "shared/bear", size: 32, corner: true if deploy&.status.in?(Deploy::IN_FLIGHT) %>
+</article>

@@ -1,0 +1,21 @@
+storefront:
+  server: nbg
+  name: storefront
+  repo_path: /nonexistent/grateful-deploy-fixtures/storefront
+  kamal_mode: destination
+  destination: nbg
+  kamal_binary: bundled
+  service: storefront
+  health_path: /up
+  domains: ["storefront.example.com"]
+
+incidents:
+  server: nbg
+  name: incidents
+  repo_path: /nonexistent/grateful-deploy-fixtures/incidents
+  kamal_mode: config_file
+  config_file: config/deploy.nbg.yml
+  kamal_binary: bundled
+  service: incidents
+  health_path: /up
+  domains: ["incidents.example.com"]

@@ -1,0 +1,27 @@
+<section id="<%= dom_id(app, :deploy_history) %>" class="panel deploy-history">
+  <h2>Deploy history</h2>
+  <% deploys = app.deploys.recent %>
+  <% if deploys.any? %>
+    <table class="table">
+      <thead>
+        <tr><th>When</th><th>Kind</th><th>Status</th><th>Version</th><th>Took</th></tr>
+      </thead>
+      <tbody>
+        <% deploys.each do |deploy| %>
+          <tr>
+            <td><%= link_to exact_time(deploy.created_at), app_deploy_path(app, deploy) %></td>
+            <td><%= deploy.kind.humanize.downcase %><%= " · outside Grateful Deploy" if deploy.outside? %></td>
+            <td><%= render "deploys/status", deploy: deploy %></td>
+            <td>
+              <span class="mono"><%= (deploy.version || deploy.git_sha)&.first(7) || "—" %></span>
+              <span class="muted"><%= deploy.git_message&.truncate(60) %></span>
+            </td>
+            <td><%= deploy.duration ? distance_of_time_in_words(deploy.duration) : "—" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="muted">No deploys from Grateful Deploy yet.</p>
+  <% end %>
+</section>

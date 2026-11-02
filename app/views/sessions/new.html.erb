@@ -1,0 +1,5 @@
+<h1>Sign in</h1>
+<%= form_with url: session_path, method: :post do |f| %>
+  <%= f.email_field :email, placeholder: "you@example.com", required: true, autofocus: true %>
+  <%= f.submit "Email me a code" %>
+<% end %>
