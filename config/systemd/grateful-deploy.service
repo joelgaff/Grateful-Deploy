@@ -1,0 +1,24 @@
+# Grateful Deploy in production mode on this laptop, at http://127.0.0.1:3100.
+# It runs from its own checkout (~/.local/share/grateful-deploy) of the last
+# pushed commit; bin/release updates that checkout, links this unit on first
+# use, and restarts it. Logs: journalctl --user -u grateful-deploy
+[Unit]
+Description=Grateful Deploy, the Kamal dashboard (127.0.0.1:3100)
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/.local/share/grateful-deploy
+Environment=RAILS_ENV=production
+Environment=SOLID_QUEUE_IN_PUMA=1
+Environment=RAILS_LOG_LEVEL=info
+ExecStart=/usr/bin/mise exec -- bin/rails server -b 127.0.0.1 -p 3100
+Restart=on-failure
+RestartSec=5
+# A deploy's Kamal runs in its own process group; on stop, Grateful Deploy
+# fails it on the next start (Deploy.fail_abandoned!). bin/release refuses
+# to restart while one is running.
+TimeoutStopSec=30
+
+[Install]
+WantedBy=default.target

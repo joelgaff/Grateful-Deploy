@@ -1,0 +1,53 @@
+<% snapshot = server.latest_server_snapshot %>
+<% apps_by_service = server.apps.index_by(&:service) %>
+<section id="<%= dom_id(server, :panel) %>" class="panel server-panel">
+  <header class="section-header">
+    <h2><%= server.name %> <span class="muted"><%= server.region %> · <%= server.host %></span></h2>
+    <% if snapshot %>
+      <span class="muted">Checked <%= exact_time(snapshot.checked_at) %></span>
+    <% end %>
+  </header>
+
+  <% if snapshot.nil? %>
+    <p class="muted">Not checked yet. Use Refresh now, or wait for the next check.</p>
+  <% else %>
+    <% if snapshot.error %>
+      <p class="app-card__error"><%= snapshot.error %></p>
+    <% end %>
+
+    <% if snapshot.memory_total %>
+      <div class="meters">
+        <%= meter "RAM", snapshot.memory_used, snapshot.memory_total, modifier: "memory" %>
+        <%= meter "Disk", snapshot.disk_used, snapshot.disk_total, modifier: "disk" %>
+        <%= meter "Swap", snapshot.swap_used, snapshot.swap_total, modifier: "swap" %>
+        <%= load_meter(snapshot) %>
+      </div>
+    <% end %>
+
+    <% if snapshot.containers.any? %>
+      <table class="table containers">
+        <thead>
+          <tr><th>Container</th><th>Version</th><th>State</th><th>Memory</th></tr>
+        </thead>
+        <tbody>
+          <% snapshot.containers.sort_by { -(it["memory_bytes"] || 0) }.each do |container| %>
+            <% app = apps_by_service[container["service"]] if container["role"] == "web" %>
+            <tr>
+              <td>
+                <% if app %>
+                  <%= link_to app.name, app %>
+                <% else %>
+                  <%= container["service"] || container["name"] %>
+                <% end %>
+                <div class="muted mono container-name"><%= container["name"] %></div>
+              </td>
+              <td class="mono"><%= container["version"]&.first(7) %></td>
+              <td><span class="status status--<%= container["state"] == "running" ? "succeeded" : "failed" %>"><%= container["state"] %></span> <span class="muted"><%= container["status"] %></span></td>
+              <td><%= container["memory_bytes"] ? number_to_human_size(container["memory_bytes"]) : "—" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  <% end %>
+</section>

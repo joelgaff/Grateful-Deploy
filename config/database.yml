@@ -1,0 +1,64 @@
+# SQLite. Versions 3.8.0 and up are supported.
+#   gem install sqlite3
+#
+#   Ensure the SQLite 3 gem is defined in your Gemfile
+#   gem "sqlite3"
+#
+default: &default
+  adapter: sqlite3
+  max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+
+# Development is how Grateful Deploy runs day to day (locally, never deployed), so it
+# gets real Solid Queue and Solid Cable databases: deploys survive a server restart
+# and their output streams across processes.
+development:
+  # Room for Solid Queue's 6 worker threads (config/queue.yml) plus its own
+  # threads, on every database a job touches (jobs broadcast through cable);
+  # checked by test/config/job_capacity_test.rb.
+  primary:
+    <<: *default
+    database: storage/development.sqlite3
+    max_connections: 10
+  queue:
+    <<: *default
+    database: storage/development_queue.sqlite3
+    max_connections: 10
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *default
+    database: storage/development_cable.sqlite3
+    max_connections: 10
+    migrations_paths: db/cable_migrate
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  <<: *default
+  database: storage/test.sqlite3
+
+# Store production database in the storage/ directory, which by default
+# is mounted as a persistent Docker volume in config/deploy.yml.
+# Pools fit Puma's threads, the 6 job threads (3 for deploys, 3 shared),
+# Solid Queue's dispatcher and scheduler, and each deploy's watchdog thread.
+production:
+  primary:
+    <<: *default
+    database: storage/production.sqlite3
+    max_connections: 12
+  cache:
+    <<: *default
+    database: storage/production_cache.sqlite3
+    max_connections: 12
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *default
+    database: storage/production_queue.sqlite3
+    max_connections: 12
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *default
+    database: storage/production_cable.sqlite3
+    max_connections: 12
+    migrations_paths: db/cable_migrate

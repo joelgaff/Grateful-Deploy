@@ -1,0 +1,3 @@
+<%# The dancing bear (dancing_bear_controller.js): shown wherever Grateful Deploy is working on something.
+    corner: true sits it in the bottom-right corner of its box (.app-card, .panel). %>
+<canvas class="bear<%= " bear--corner" if local_assigns[:corner] %>" aria-hidden="true" data-controller="dancing-bear" data-dancing-bear-size-value="<%= local_assigns.fetch(:size, 128) %>"></canvas>

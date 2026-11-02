@@ -1,0 +1,25 @@
+storefront_old:
+  app: storefront
+  version: 0041612645e211e57d08ed7bac117b27a96ac7e9
+  container_state: running
+  memory_bytes: 300000000
+  health_code: 200
+  response_ms: 350
+  checked_at: <%= 10.days.ago %>
+
+storefront_now:
+  app: storefront
+  version: f5956902a92a15920788c2d4e319966db0565461
+  container_state: running
+  container_status: Up 5 days
+  memory_bytes: 369413324
+  health_code: 200
+  response_ms: 366
+  checked_at: <%= 1.minute.ago %>
+
+# Crashing: Kamal's unless-stopped policy restarts it. (exited means stopped on purpose.)
+incidents_down:
+  app: incidents
+  container_state: restarting
+  health_code: 502
+  checked_at: <%= 1.minute.ago %>

@@ -1,0 +1,8 @@
+== lock-storefront-nbg
+Locked by: Joel at 2026-10-17T18:02:11Z
+Version: 3f82b485b194
+Message: Automatic deploy lock
+== lock-blog
+Locked by: Joel at 2026-10-17T18:05:40Z
+Version: 8d2f3f68a5c7
+Message: Manual lock

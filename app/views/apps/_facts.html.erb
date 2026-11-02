@@ -1,0 +1,21 @@
+<% snapshot = app.latest_status_snapshot %>
+<section id="<%= dom_id(app, :facts) %>" class="panel">
+  <dl class="app-facts">
+    <div><dt>Running version</dt><dd class="mono"><%= app.running_status_snapshot&.short_version || "—" %></dd></div>
+    <div><dt>Container</dt><dd><%= snapshot&.container_status || snapshot&.container_state || "—" %></dd></div>
+    <div><dt>Memory</dt><dd><%= snapshot&.memory_bytes ? number_to_human_size(snapshot.memory_bytes) : "—" %></dd></div>
+    <div><dt>Health</dt><dd><%= snapshot&.health_code || "—" %> <span class="muted"><%= app.health_path %><%= " · #{snapshot.response_ms} ms" if snapshot&.response_ms %></span></dd></div>
+    <div><dt>Domains</dt>
+      <dd>
+        <% app.domains.each do |domain| %>
+          <%= link_to domain, "http://#{domain}", target: "_blank", rel: "noopener" %><br>
+        <% end %>
+      </dd>
+    </div>
+    <div><dt>Repo</dt><dd class="mono"><%= app.repo_path %></dd></div>
+    <div><dt>Deploys with</dt><dd class="mono"><%= KamalCommand.new(app, :deploy).display %></dd></div>
+  </dl>
+  <% if snapshot&.error %>
+    <p class="<%= snapshot.running_unchecked? ? "app-card__note" : "app-card__error" %>"><%= snapshot.error %></p>
+  <% end %>
+</section>

@@ -1,0 +1,1 @@
+<span id="<%= dom_id(deploy, :status) %>" class="status status--<%= deploy.status %>"><%= deploy.queued? ? "waiting to start" : deploy.status %></span>

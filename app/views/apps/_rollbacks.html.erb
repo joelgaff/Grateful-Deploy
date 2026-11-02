@@ -1,0 +1,16 @@
+<section id="<%= dom_id(app, :rollbacks) %>" class="panel rollbacks">
+  <h2>Roll back</h2>
+  <% versions = app.rollback_versions %>
+  <% if versions.any? %>
+    <p class="muted">Versions <%= app.name %> has run before. Kamal can only roll back to versions whose container is still on the server.</p>
+    <div class="button-row">
+      <% versions.each do |version| %>
+        <%= button_to "Roll back to #{version.first(7)}", app_rollbacks_path(app), params: { version: version },
+              class: "button button--danger", disabled: app.deploy_in_flight? || app.deploy_blocked_reason.present?,
+              data: { turbo_confirm: "Roll #{app.name} back to #{version.first(7)}? This replaces the running version." } %>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="muted">No earlier versions known yet. They appear here after deploys from Grateful Deploy or status checks see a new version running.</p>
+  <% end %>
+</section>

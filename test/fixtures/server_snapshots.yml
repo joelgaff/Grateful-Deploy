@@ -1,0 +1,24 @@
+nbg_now:
+  server: nbg
+  memory_total: 8122322944
+  memory_used: 3722952704
+  memory_available: 4399370240
+  swap_total: 2147479552
+  swap_used: 434176
+  disk_total: 80279486464
+  disk_used: 11338067968
+  disk_available: 65643118592
+  load_1: 0.21
+  load_5: 0.14
+  load_15: 0.10
+  cpus: 4
+  containers: <%= [{ "name" => "kamal-proxy", "image" => "basecamp/kamal-proxy:v0.9.2", "service" => nil, "role" => nil, "state" => "running", "status" => "Up 20 hours", "memory_bytes" => 7950000 },
+                   { "name" => "storefront-web-nbg-f5956902a92a15920788c2d4e319966db0565461", "image" => "localhost:5555/storefront:f5956902a92a15920788c2d4e319966db0565461", "service" => "storefront", "role" => "web", "version" => "f5956902a92a15920788c2d4e319966db0565461", "state" => "running", "status" => "Up 5 days", "memory_bytes" => 369413324 }].to_json %>
+  checked_at: <%= 1.minute.ago %>
+
+nbg_old:
+  server: nbg
+  memory_total: 8122322944
+  memory_used: 1000000000
+  containers: "[]"
+  checked_at: <%= 10.days.ago %>

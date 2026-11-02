@@ -1,0 +1,6 @@
+nbg:
+  organization: primary
+  name: nbg
+  host: 203.0.113.10
+  region: Nuremberg
+  proxy_http_port: 8080

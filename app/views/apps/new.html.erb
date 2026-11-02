@@ -1,0 +1,55 @@
+<% content_for :title, "Add #{@proposal.config.repo.key} · Grateful Deploy" %>
+<% config = @proposal.config %>
+
+<header class="section-header">
+  <h1>Add <%= config.repo.key %> <span class="muted mono"><%= config.id %></span></h1>
+</header>
+
+<section class="panel app-proposal">
+  <dl class="app-facts">
+    <div><dt>Repo</dt><dd class="mono"><%= config.repo.path %></dd></div>
+    <div><dt>Deploys with</dt><dd class="mono"><%= config.kamal_binary == "global" ? "kamal" : "bin/kamal" %> <%= config.destination ? "-d #{config.destination}" : "-c #{config.config_file}" %></dd></div>
+    <div><dt>Service</dt><dd class="mono"><%= config.service %></dd></div>
+    <div><dt>Server</dt><dd><%= @proposal.server ? "#{@proposal.server.name} (#{@proposal.server.host})" : "set by the config's ERB: pick it below" %></dd></div>
+  </dl>
+</section>
+
+<section class="panel">
+  <%= form_with model: @app, url: apps_path, class: "app-form" do |form| %>
+    <%= hidden_field_tag :repo, config.repo.key %>
+    <%= hidden_field_tag :config, config.id %>
+
+    <% if @app.errors.any? %>
+      <ul class="form-errors flash flash--alert">
+        <% @app.errors.full_messages.each do |message| %><li><%= message %></li><% end %>
+      </ul>
+    <% end %>
+
+    <label>Name <%= form.text_field :name, required: true %></label>
+
+    <% if @proposal.server_choice? %>
+      <label>Server <%= form.collection_select :server_id, Current.organization.servers.order(:name), :id, :name %></label>
+    <% end %>
+
+    <label>Domains <span class="muted">(the first is health-checked)</span>
+      <%= form.text_field :domains, value: @app.domains.join(", ") %>
+    </label>
+
+    <label>Health path <%= form.text_field :health_path %></label>
+    <label class="checkbox"><%= form.check_box :health_https %> Check over HTTPS <span class="muted">(the proxy has ssl: true<%= ", which the ERB decides here" if config.ssl.nil? %>)</span></label>
+
+    <% if config.env_names.any? %>
+      <fieldset>
+        <legend>Settings the config reads from ENV <span class="muted">(secrets stay in the repo's .env)</span></legend>
+        <% config.env_names.each do |name| %>
+          <label class="mono"><%= name %> <%= text_field_tag "app[kamal_env][#{name}]", @app.kamal_env[name] %></label>
+        <% end %>
+      </fieldset>
+    <% end %>
+
+    <div class="button-row">
+      <%= form.submit "Add app", class: "button" %>
+      <%= link_to "Back", repos_path, class: "button button--quiet" %>
+    </div>
+  <% end %>
+</section>

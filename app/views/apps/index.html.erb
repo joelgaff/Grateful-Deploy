@@ -1,0 +1,22 @@
+<% content_for :title, "Apps · Grateful Deploy" %>
+<%= turbo_stream_from "apps" %>
+
+<div class="toolbar">
+  <p class="muted">Status refreshes every 2 minutes.</p>
+  <div class="toolbar__actions">
+    <%= link_to "Add app", repos_path, class: "button button--quiet" %>
+    <%= button_to "Refresh now", status_refresh_path, class: "button button--quiet" %>
+  </div>
+</div>
+
+<% @servers.each do |server| %>
+  <section class="server-group">
+    <header class="section-header">
+      <h1><%= server.name %> <span class="muted"><%= server.region %> · <%= server.host %></span></h1>
+    </header>
+
+    <div class="app-grid">
+      <%= render partial: "apps/card", collection: server.apps.sort_by(&:name), as: :app %>
+    </div>
+  </section>
+<% end %>

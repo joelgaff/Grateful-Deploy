@@ -1,0 +1,19 @@
+<% content_for :title, "#{@app.name} · Grateful Deploy" %>
+<%= turbo_stream_from @app %>
+<%= render "apps/header", app: @app %>
+<%= render "apps/deploy_controls", app: @app, fresh_ci: true %>
+<%= render "apps/facts", app: @app %>
+
+<section class="panel" id="logs">
+  <%= turbo_stream_from @app, :logs %>
+  <header class="section-header">
+    <h2>Logs</h2>
+    <%= render "log_sessions/controls", app: @app %>
+  </header>
+  <div id="<%= dom_id(@app, :logs) %>" class="log" data-controller="log" data-action="scroll->log#scroll"></div>
+  <p class="muted">Following stops on its own after 15 minutes.</p>
+</section>
+
+<%= render "apps/rollbacks", app: @app %>
+
+<%= render "apps/deploy_history", app: @app %>

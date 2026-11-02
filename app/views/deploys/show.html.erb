@@ -1,0 +1,9 @@
+<% content_for :title, "#{@deploy.kind.humanize} #{@app.name} · Grateful Deploy" %>
+<%= turbo_stream_from @deploy %>
+
+<%= render "deploys/summary", deploy: @deploy %>
+
+<section class="panel">
+  <h2>Output</h2>
+  <div id="<%= dom_id(@deploy, :log) %>" class="log" data-controller="log" data-action="scroll->log#scroll" data-log-catch-up-url-value="<%= app_deploy_lines_path(@app, @deploy) %>" data-log-summary-id-value="<%= dom_id(@deploy, :summary) %>"><% @deploy.numbered_lines.each do |line, number| %><%= render "deploys/line", line: line, number: number, deploy: @deploy %><% end %></div>
+</section>

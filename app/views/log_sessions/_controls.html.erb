@@ -1,0 +1,10 @@
+<div id="<%= dom_id(app, :log_controls) %>" class="button-row">
+  <% if (session = app.running_log_session) %>
+    <%= render "shared/bear", size: 32 unless session.pid && session.follow_mode? %>
+    <span class="status status--running"><%= session.pid ? (session.follow_mode? ? "Following" : "Loading") : "Waiting to start" %></span>
+    <%= button_to "Stop", app_log_session_path(app, session), method: :delete, class: "button button--quiet" %>
+  <% else %>
+    <%= button_to "Last 200 lines", app_log_sessions_path(app), params: { mode: "recent" }, class: "button button--quiet" %>
+    <%= button_to "Follow live", app_log_sessions_path(app), params: { mode: "follow" }, class: "button button--quiet" %>
+  <% end %>
+</div>

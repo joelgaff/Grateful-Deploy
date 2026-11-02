@@ -1,0 +1,4 @@
+{"ID":"7a66be41d085","MemUsage":"7.582MiB / 7.565GiB","MemPerc":"0.10%","CPUPerc":"0.00%","Name":"kamal-proxy"}
+{"ID":"1fc01fa47846","MemUsage":"352.3MiB / 7.565GiB","MemPerc":"4.55%","CPUPerc":"1.75%","Name":"storefront-web-nbg-f5956902a92a15920788c2d4e319966db0565461"}
+{"ID":"7a4ef3a11b2b","MemUsage":"383.3MiB / 7.565GiB","MemPerc":"4.95%","CPUPerc":"1.12%","Name":"notes-web-nbg-66504c30d08477fb438107f55961e4c3361183af"}
+{"ID":"cc37ea3fbd8d","MemUsage":"405.8MiB / 7.565GiB","MemPerc":"5.24%","CPUPerc":"1.44%","Name":"incidents-web-6166282591998439304e63c867967a93aea3ad5b"}

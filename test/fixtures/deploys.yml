@@ -1,0 +1,10 @@
+storefront_done:
+  app: storefront
+  kind: deploy
+  status: succeeded
+  git_sha: 7d1e0f2a9c4b5e6f708192a3b4c5d6e7f8091a2b
+  git_message: Tighten race list layout
+  started_at: <%= 2.days.ago %>
+  finished_at: <%= 2.days.ago + 3.minutes %>
+  exit_code: 0
+  log: "Finished all in 180.2 seconds"

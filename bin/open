@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# What the Grateful Deploy app launcher runs: opens (or focuses) Grateful Deploy in
+# its own window, first making sure the production service is answering. If
+# it isn't (stopped, crashed, not started yet), it starts it and waits, so the
+# window never opens on a dead page.
+set -uo pipefail
+
+URL="http://127.0.0.1:3100"
+UNIT="grateful-deploy.service"
+# Chromium names an --app window's class after its host, so this matches the
+# Grateful Deploy window and never an ordinary browser tab titled "Grateful Deploy".
+WINDOW="chrome-127.0.0.1__"
+
+answering() { curl -fs -o /dev/null --max-time 2 "$URL/up"; }
+
+if ! answering; then
+  systemctl --user reset-failed "$UNIT" 2> /dev/null # a crashed unit may have hit its restart limit
+  systemctl --user start "$UNIT"
+  notify-send -a "Grateful Deploy" "Starting Grateful Deploy…" "It opens in a few seconds." 2> /dev/null
+
+  for _ in $(seq 60); do
+    answering && break
+    sleep 0.5
+  done
+
+  if ! answering; then
+    notify-send -a "Grateful Deploy" -u critical "Grateful Deploy didn't start" \
+      "See its log: journalctl --user -u grateful-deploy" 2> /dev/null
+    exit 1
+  fi
+fi
+
+exec omarchy-launch-or-focus-webapp "$WINDOW" "$URL"

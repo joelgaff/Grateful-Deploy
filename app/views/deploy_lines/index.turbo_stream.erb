@@ -1,0 +1,2 @@
+<%= turbo_stream.append dom_id(@deploy, :log) do %><% @lines.each do |line, number| %><%= render "deploys/line", line: line, number: number, deploy: @deploy %><% end %><% end %>
+<%= turbo_stream.replace dom_id(@deploy, :summary), partial: "deploys/summary", locals: { deploy: @deploy } %>

@@ -1,0 +1,33 @@
+<div id="<%= dom_id(deploy, :summary) %>" data-in-flight="<%= deploy.status.in?(Deploy::IN_FLIGHT) %>">
+  <header class="section-header">
+    <h1><%= link_to deploy.app.name, deploy.app %> <span class="muted"><%= deploy.kind.humanize.downcase %> #<%= deploy.id %></span></h1>
+    <div class="button-row">
+      <%= render "deploys/status", deploy: deploy %>
+      <% if deploy.status.in?(Deploy::IN_FLIGHT) %>
+        <%= button_to "Cancel deploy", app_deploy_cancellation_path(deploy.app, deploy), class: "button button--danger",
+              data: { turbo_confirm: "Cancel this #{deploy.kind.humanize.downcase} of #{deploy.app.name}? Kamal is stopped where it is; check the app afterwards." } %>
+      <% end %>
+    </div>
+  </header>
+
+  <section class="panel">
+    <%= render "shared/bear", size: 32, corner: true if deploy.status.in?(Deploy::IN_FLIGHT) %>
+    <dl class="app-facts deploy-facts">
+      <% if deploy.rollback_kind? %>
+        <div><dt>Rolling back to</dt><dd class="mono"><%= deploy.version.first(7) %></dd></div>
+      <% elsif deploy.start_kind? %>
+        <div><dt>Starting</dt><dd class="mono"><%= deploy.version.first(7) %></dd></div>
+      <% elsif deploy.deploy_kind? %>
+        <div><dt>Commit</dt><dd><span class="mono"><%= deploy.git_sha&.first(7) || "—" %></span> <%= deploy.git_message %></dd></div>
+        <div><dt>Branch</dt><dd class="mono"><%= deploy.git_branch || "—" %></dd></div>
+      <% end %>
+      <div><dt>Queued</dt><dd><%= exact_time(deploy.created_at) %></dd></div>
+      <% if deploy.duration %>
+        <div><dt>Took</dt><dd><%= distance_of_time_in_words(deploy.duration) %></dd></div>
+      <% end %>
+      <% if deploy.exit_code %>
+        <div><dt>Exit code</dt><dd class="mono"><%= deploy.exit_code %></dd></div>
+      <% end %>
+    </dl>
+  </section>
+</div>
